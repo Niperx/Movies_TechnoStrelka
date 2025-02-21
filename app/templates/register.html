@@ -1,37 +1,46 @@
 {% extends "base.html" %}
 
+{% block title %}Регистрация{% endblock %}
+
+{% block body_class %}auth-centered{% endblock %}
+
 {% block content %}
-    <h1>Register</h1>
-    <form action="" method="post">
+<!-- Контейнер для формы регистрации -->
+<div class="auth-container">
+    <h1>Регистрация</h1>
+    <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
+        <div class="form-group">
+            <label for="username">{{ form.username.label }}</label><br>
+            {{ form.username(size=32, placeholder=form.username.description, class="form-control") }}<br>
             {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">[{{ error }}]</span><br>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=64) }}<br>
+        </div>
+        <div class="form-group">
+            <label for="email">{{ form.email.label }}</label><br>
+            {{ form.email(size=64, placeholder=form.email.description, class="form-control") }}<br>
             {% for error in form.email.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">[{{ error }}]</span><br>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
+        </div>
+        <div class="form-group">
+            <label for="password">{{ form.password.label }}</label><br>
+            {{ form.password(size=32, placeholder=form.password.description, class="form-control") }}<br>
             {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">[{{ error }}]</span><br>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password2.label }}<br>
-            {{ form.password2(size=32) }}<br>
+        </div>
+        <div class="form-group">
+            <label for="password2">{{ form.password2.label }}</label><br>
+            {{ form.password2(size=32, placeholder=form.password2.description, class="form-control") }}<br>
             {% for error in form.password2.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+                <span class="error">[{{ error }}]</span><br>
             {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
     </form>
+</div>
 {% endblock %}

@@ -1,26 +1,39 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block title %}Авторизация{% endblock %}
 
-  <h1>Авторизация</h1>
-  <p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
-  <form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    <p>
-      {{ form.username.label }}<br>
-      {{ form.username(size=32, placeholder=form.username.description) }}
-      {% for error in form.username.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-      {% endfor %}
-    </p>
-    <p>
-      {{ form.password.label }}<br>
-      {{ form.password(size=32, placeholder=form.password.description) }}
-      {% for error in form.password.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-      {% endfor %}
-    </p>
-    <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-    <p>{{ form.submit() }}</p>
-  </form>
+{% block body_class %}auth-centered{% endblock %}
+
+{% block content %}
+<!-- Контейнер для формы авторизации -->
+<div class="auth-container">
+    <h1>Авторизация</h1>
+    <p>Новый пользователь? <a href="{{ url_for('register') }}" class="register-link">Зарегистрируйтесь!</a></p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="username">{{ form.username.label }}</label><br>
+            {{ form.username(size=32, placeholder=form.username.description, class="form-control") }}
+            {% for error in form.username.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="password">{{ form.password.label }}</label><br>
+            {{ form.password(size=32, placeholder=form.password.description, class="form-control") }}
+            {% for error in form.password.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div class="form-group remember-me-container">
+            <div class="form-check">
+                {{ form.remember_me(class="form-check-input") }}
+                <label for="remember_me" class="form-check-label">{{ form.remember_me.label }}</label>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
 {% endblock %}

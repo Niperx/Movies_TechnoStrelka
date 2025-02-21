@@ -18,7 +18,7 @@ def before_request():
 
 @app.route('/')
 @app.route('/index')
-@login_required
+# @login_required
 def index():
     user = User.query.get(1)
     return render_template('index.html', user=user)

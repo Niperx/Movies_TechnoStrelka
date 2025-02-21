@@ -1,0 +1,153 @@
+/* Общие стили */
+body {
+    padding-top: 70px; /* Отступ под навигационную панель */
+    background-color: #f8f9fa; /* Легкий серый фон */
+}
+
+.site-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Стили для формы авторизации */
+.auth-container {
+    width: 100%; /* Ширина контейнера */
+    max-width: 500px; /* Максимальная ширина */
+    padding: 30px; /* Более широкие отступы */
+    background-color: #ffffff;
+    border-radius: 15px; /* Более закругленные углы */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Более заметная тень */
+    text-align: center; /* Центрируем текст внутри контейнера */
+    margin: 0 auto; /* Центрируем горизонтально */
+}
+
+.auth-centered {
+    display: flex; /* Добавляем flexbox для центрирования */
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center; /* Центрируем по вертикали */
+    min-height: 100vh; /* Занимаем всю высоту viewport */
+    margin: 0; /* Убираем стандартные отступы */
+}
+
+.auth-container h1 {
+    font-size: 2.5rem; /* Увеличиваем размер заголовка */
+    margin-bottom: 20px;
+}
+
+.auth-container p {
+    font-size: 1.1rem; /* Увеличиваем размер текста */
+    margin-bottom: 20px;
+}
+
+.auth-container form .form-group {
+    margin-bottom: 20px; /* Более широкие отступы между полями */
+}
+
+.auth-container form label {
+    font-size: 1.1rem; /* Увеличиваем размер меток */
+    font-weight: bold;
+    margin-bottom: 5px; /* Отступ между меткой и полем ввода */
+}
+
+.auth-container form input[type="text"],
+.auth-container form input[type="password"] {
+    padding: 15px; /* Более широкие отступы внутри полей ввода */
+    font-size: 1rem; /* Увеличиваем размер шрифта в полях ввода */
+    border: 1px solid #ced4da;
+    border-radius: 10px; /* Более закругленные углы у полей ввода */
+}
+
+.auth-container form input[type="submit"] {
+    padding: 15px; /* Более широкие отступы внутри кнопки */
+    font-size: 1.1rem; /* Увеличиваем размер шрифта на кнопке */
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 10px; /* Более закругленные углы у кнопки */
+    cursor: pointer;
+}
+
+.auth-container form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.auth-container form .error {
+    color: red;
+    font-size: 1rem; /* Увеличиваем размер ошибок */
+}
+
+.auth-container form .remember-me {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem; /* Увеличиваем размер чекбокса и метки */
+}
+
+.auth-container form .register-link {
+    font-size: 1.1rem; /* Увеличиваем размер ссылки */
+}
+
+/* Стили для чекбокса "Запомнить меня" */
+.remember-me-container {
+    display: flex; /* Размещаем элементы в одну строку */
+    align-items: center; /* Выравниваем вертикально */
+    margin-bottom: 20px; /* Отступ между чекбоксом и кнопкой */
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+.form-check-input {
+    margin-right: 10px; /* Отступ между чекбоксом и текстом */
+}
+
+/* Стили для карточек фильмов */
+.movie-card {
+    margin-bottom: 15px; /* Отступ между карточками */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    height: 350px; /* Фиксированная высота карточки */
+    display: flex; /* Используем flexbox для вертикального выравнивания */
+    flex-direction: column; /* Размещаем элементы вертикально */
+}
+
+.movie-card img {
+    width: 100%;
+    height: 250px; /* Увеличиваем высоту изображения */
+    object-fit: cover;
+}
+
+.movie-card .card-body {
+    padding: 10px; /* Уменьшаем внутренние отступы */
+    text-align: center;
+    flex-grow: 1; /* Заполняем оставшееся пространство текстом */
+    display: flex; /* Для центрирования содержимого */
+    flex-direction: column; /* Вертикальное размещение элементов */
+    justify-content: space-between; /* Распределяем элементы равномерно */
+}
+
+.movie-card h5.card-title {
+    font-size: 1rem; /* Размер заголовка */
+    margin-bottom: 5px;
+}
+
+/* Ограничение высоты описания */
+.movie-card p.card-text {
+    font-size: 0.9rem; /* Размер шрифта */
+    margin-bottom: 10px;
+    max-height: 72px; /* Максимальная высота для 2–3 строк текста */
+    overflow: hidden; /* Скрываем лишний текст */
+    text-overflow: ellipsis; /* Добавляем "..." для скрытого текста */
+    display: -webkit-box; /* Для корректной работы с многострочным текстом */
+    -webkit-line-clamp: 3; /* Количество отображаемых строк */
+    -webkit-box-orient: vertical; /* Вертикальное размещение строк */
+}
+
+.movie-card .btn-primary {
+    padding: 5px 10px; /* Размер кнопки */
+    font-size: 0.9rem;
+    align-self: center; /* Центрируем кнопку */
+}
