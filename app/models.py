@@ -33,3 +33,28 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+
+class Film(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    film_id: so.Mapped[int] = so.mapped_column(unique=True, nullable=False)
+    title: so.Mapped[str] = so.mapped_column(sa.String(200), index=True, nullable=False)
+    year: so.Mapped[Optional[int]] = so.mapped_column(comment='opt')
+    rating: so.Mapped[Optional[float]] = so.mapped_column(sa.Float, comment='opt')
+    description: so.Mapped[Optional[str]] = so.mapped_column(sa.String(500), comment='opt')
+    shortDescription: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt')
+    poster_Url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt')
+    poster_Url_preview: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt')
+    cover_Url:  so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt')
+    wed_Url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt')
+    genres: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt')
+    countries: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt'),
+    tags: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300), comment='opt'),
+    ai_plot: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000), comment='opt1'),
+    ai_characters: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000), comment='opt2'),
+    ai_moment: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000), comment='opt3'),
+    ai_idea: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000), comment='opt4'),
+    ai_impress: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000), comment='opt5')
+
+    def __repr__(self):
+        return f"<Film(film_id={self.film_id}, name_ru={self.title}, year={self.year}, rating={self.rating})>"
