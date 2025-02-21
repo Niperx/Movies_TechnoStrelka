@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
 
+from dns.e164 import query
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import sqlalchemy as sa
 from app import app, db
-from app.models import User
+from app.models import User, Film
 from app.forms import LoginForm, RegistrationForm, EditProfileForm
 
 
@@ -20,8 +21,11 @@ def before_request():
 @app.route('/index')
 # @login_required
 def index():
-    user = User.query.get(1)
-    return render_template('index.html', user=user)
+    films = db.session.scalars(
+        sa.select(Film)
+    ).all()
+    return render_template('index.html', films=films)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -66,6 +70,12 @@ def register():
 def user(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
     return render_template('user.html', user=user)
+
+
+@app.route('/movie/<film_id>')
+def movie(film_id):
+    film = db.first_or_404(sa.select(Film).where(Film.film_id == film_id))
+    return render_template('movie.html', film=film)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])

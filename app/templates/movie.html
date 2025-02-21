@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ film.title }} | КиноКаталог{% endblock %}
+
+{% block content %}
+<!-- Главный контейнер для информации о фильме -->
+<div class="container my-5">
+    <div class="row">
+        <!-- Блок с постером фильма -->
+        <div class="col-md-4 col-sm-12 text-center">
+            <img src="{{ film.poster_Url }}" alt="{{ film.title }} poster" class="img-fluid rounded mb-3" style="max-height: 400px;">
+        </div>
+
+        <!-- Блок с информацией о фильме -->
+        <div class="col-md-8 col-sm-12">
+            <h1 class="mb-3">{{ film.title }}</h1>
+            <p class="lead"><strong>Год:</strong> {{ film.year }}</p>
+            <p class="lead"><strong>Рейтинг:</strong> {{ film.rating }}</p>
+            <p class="lead"><strong>Жанры:</strong> {{ film.genres[:-2] }}</p>
+            <p class="lead"><strong>Страна:</strong> {{ film.countries[:-2] }}</p>
+            <hr>
+            <p>
+                <span id="shortDescription">{{ film.description[:-1][:300] }}</span>
+                <span id="dots">...</span>
+                <span id="more" style="display: none;">{{ film.description[:-1][300:] }}</span>
+            </p>
+            <button onclick="toggleDescription()" class="btn btn-primary" id="readMoreBtn">Читать далее</button>
+        </div>
+    </div>
+    <hr>
+</div>
+
+<!-- Скрипт для кнопки "Читать далее" -->
+<script>
+    function toggleDescription() {
+        const shortDescription = document.getElementById("shortDescription");
+        const dots = document.getElementById("dots");
+        const moreText = document.getElementById("more");
+        const btnText = document.getElementById("readMoreBtn");
+
+        if (moreText.style.display === "none") {
+            moreText.style.display = "inline";
+            dots.style.display = "none";
+            btnText.innerHTML = "Свернуть";
+        } else {
+            moreText.style.display = "none";
+            dots.style.display = "inline";
+            btnText.innerHTML = "Читать далее";
+        }
+    }
+</script>
+{% endblock %}

@@ -6,77 +6,18 @@
 <div class="container">
     <div class="row">
         <!-- Пример карточки фильма -->
+        {% for film in films %}
         <div class="col-md-2 col-sm-4 col-6">
             <div class="card movie-card">
-                <img src="https://kinopoisk-ru.clstorage.net/Y1R55Z173/4de319VA4_/RFKEQ85Ek_PO32AGHgk480zNQ8E-B9yY0yGy-pKjUEAixxCRtnTXXIIto1OEMhlrs0vf92_k8cw0yAGRMBoQZx8HwkSNGtyuzJ9jRhxfa6EHhhSUchve0pQ86evI-RBwFPU6_oBW5HKgS9wUynUHM-4Un-Rh67vBK49B415beARgZJ13-XTWzPn7AS8RMgXjU6FGxxpt17nlb4n_qrRFVj3lCt-3VNt-pFHUC_RTSzHmPJnwQOaa-E-NUdRiDFcqU1SkVvRzxcvj3QcRGCUE2E6JZ-8kUem09WSs2J62Wm4e0D7bpm70f6Z3wwXWe3sx4iu3-mHJvsRBl3zNeRZ3N3hgpWXGXtr3xM86JwUEDeRAlFXSD3vSif5cltmppU9NJcQ1-aVK3FCqTNQi-HhZEs8Tg859ybrORrl23mQWUAd2Q7Fa6mTYzvPULzMwICvMeKdq9yJK1r_ka6vDu6JpWQDiCvSnS-V8jEXmMtZ7WTXCPoXYb9qQy3exddlUKVkOc3CaZO1y793p3CQ7KBIM3FaWRc0BX82Z71q44Le9ZnwN0CjdpnrMba5P5RHrWGU8zAym_V_Kh9pOuWfRexx4L3N-lE3zZPzvwsYqFCgyGMRmikXgHFvRlcNAoMuWtWVbGfE5-b512n2IUP0FzHVMEdUbtNJG2KTtTbt6zFMDbRhjZIhr6lz13MvqGREQFCb7ULV1_BBHyqjDdYjZsoljXSbfGfquXdt9gGfaJelAYRviGYHmfvCO22uVXstPMXgNc1mEYdlwye7PxyQGPAkfxWOiVdYuf-qp_3SjxKSAbUgZ2yPsjHvMQ6hKwxfuYUAg4i6IxGbJoN9XnlPkTSl7N2tKgmD0Q97K0uE2EhkrP_1nt3n0JEPPi-9OjNmvolFtEfkx7LB2-XOASOgTz2hLLusTtNtpwIL5Q6d27E4vbCtecr5k-l_J_c3CAB47NwTHY6tv7iB_1rvTY5P1jqZWYjzgE8mnfcxDkkToNuRLQwjTPqjTfuOd_mOSUc5YCWUvVUOoUtVBzNzs2yURKi8e5V2CQvcfcuGYyl2q5amaen8RwCnTuF7ZaopIxjrockcU7zy-1WLgu89LrF7xTgFVGX9-hG_0dNTt59ohCBQtENthk13vHUrxhcV1scGdoElhIOASy7BP_2yoT_8n-XJnFew5hc5C9b3rUa9y5VscVQ5WaYlm5nHW6MvCAzEPPg3xe61bwA143oX9a7T3maVIWDLwFtevdNl3kmz8IPJQeDHkCIbeeeus20KHVchOMmYXRGu1UdNd-u3B-A06GxAf0EaQdfEYb_S63ViO36-dTn0S0Dz_u0riaJ93-hnudmAi7BWZw1fQvcNXvkD5Rz9PBnhfpkD0ZtPs5O8CEDctGuJeoELpAU3JnNNfrsSOrk55IvYs-qlW8VioUtcB6WFtDP4-ps1Mz6DoaLZi9EAReThjRL9M0HzJ8NDDLSg4ATb6Uo119DhC7LvteqnhlL55azLEAdqLevtBoljEKvVIfQHkD6TNa_Wn7mSxVtRADmI_R3e3R9VP0P_o_AI-PB4K5nybRPEacc6W0Gi34o6mUnou_zzOqk_YYb1R_zb7bWUQ3QC88F3LkNtSl1vVaBB3GER1kWzWWOn7_Po_BxA3Ot17pmTxD0fysddrivmXpG5jMs0N8b1j_06rQP0w7HtwNu8WvcNUxobnVq9S6FYTajBXf6Vk7GDF98jEICkZFDTuZ4pByw1ez7_GVo3luL5nXQzHF-qdXftthVrbG_lJfBT2FaP9R9utwWa6df9SK2sQVkq8ROtA_tf_1SAFCBMd82OueeoNbfelyF-O4rSNRGI8xDHwjXf5Y51HxzrJems7_wy6wETBnOZBin3RTAFnDX50tUPEfPXv-v4IKjcCO8Z3ul3pB23Ums5mg9irp1loKdIvy757xna3aNMC0kFFPP4skeZd44fYVLdz5FIRWBB6abZM73nT58_GAh4VMi_SRoBJ7DxAypv3VrfKsp9lYA3yDNKtVNB5hnLUNcxPZxrXC4fkeMiq7X2zY8R7MksaVmSIbe9G59fm1gw1MCAb-Hu1bu0PWfiR6k-1w5OoaFol2DXthmDnSKFm0zH4ZW8syA-R5nrSgsVOs1fTaxpTCXVVh03Mcfn37Ns7JQofJuBlpGPlCEndmuRDj_yxqm1iJew6xr5S_HitQeYl9GNxLN4Uicd_wabdZrNExVQVbCd_Q55k0Frw0fDoKA4NBgbzboFexgtkyrHqfpH4kZxGYA3CHeWvVcJNq3fmBsVXZTXwPpzaScaB60mpZNd4AkwXX3i0Yftv_uT_1SwaFQMr-UKlQMcJUuqp8UCc_JCvU0Uu3yPNr2nZUrVx1SToakML0gCK3GrkidBEsWTXTQ1vEkFHt3X0T-fY0NQ8Mh0dDNF5gljoK2Ljhf9uiceRrk95I9w515JQ8leyUcEk9GVjE98_qOFe4IXZSYp323MsUjZWQaZJ7F_R0NnrPzI0FRfFQq1F8z9-9ZzgSZbwrYpQfT_BMt6tTPV0pXj0MdRHbT3fDJHZWMOux122Qc5SNFANd3KeQ_p0zdjG2T43LRMGx1qKfsgJT_mR_ki--Lq9ZUsHzhnstFvTfoRh1Q7pa0EU1z2kwmv7p81EmXnPbRdmGnhcqkPLXNTWxPUmGik3PcJck0T8KFDVtM1Et_WVtGJAG94R-Idb12KydOsa9kB8Hu8ZvtNE57rDfahm9G4qTRJGXZxt7GL_2f_nNysXLjXXbIh1zhpe8571T5vXjbxZfQHiGuaVYfh4glXdOd9jbhXgK6XNT9OL-2qVUv9zI0IbZkKaUdVN0tje1C0aGzcK70KuY94ncfykym2d44a_RUUIzjjzjH_yTKpo_Qnfdlko3SuS_kD6nfhNtVv0cBBSF15kqlDeeO7w7c4DNxQgFe5zsGX-Dm7qs8hpiduemlFIHeQi3rRR9G6ESv0v60FNLMwLldNGxoTAYpU" alt="Фильм 1" class="card-img-top">
+                <img src="{{ film.poster_Url }}" alt="{{ film.title }}" class="card-img-top">
                 <div class="card-body">
-                    <h5 class="card-title">1+1</h5>
-                    <p class="card-text">Аристократ на коляске нанимает в сиделки бывшего заключенного. Искрометная французская комедия с Омаром Си</p>
-                    <a href="#" class="btn btn-primary">Подробнее</a>
+                    <h5 class="card-title">{{ film.title }}</h5>
+                    <p class="card-text">{{ film.shortDescription }}</p>
+                    <a href="{{ url_for('movie', film_id=film.film_id) }}" class="btn btn-primary">Подробнее</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-sm-4 col-6">
-            <div class="card movie-card">
-                <img src="https://via.placeholder.com/200x200" alt="Фильм 2" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">Название фильма 2</h5>
-                    <p class="card-text">Краткое описание фильма. Краткое описание фильма. Краткое описание фильма.</p>
-                    <a href="#" class="btn btn-primary">Подробнее</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-sm-4 col-6">
-            <div class="card movie-card">
-                <img src="https://via.placeholder.com/200x200" alt="Фильм 2" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">Название фильма 2</h5>
-                    <p class="card-text">Краткое описание фильма.</p>
-                    <a href="#" class="btn btn-primary">Подробнее</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-sm-4 col-6">
-            <div class="card movie-card">
-                <img src="https://via.placeholder.com/200x200" alt="Фильм 2" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">Название фильма 2</h5>
-                    <p class="card-text">Краткое описание фильма.</p>
-                    <a href="#" class="btn btn-primary">Подробнее</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-sm-4 col-6">
-            <div class="card movie-card">
-                <img src="https://via.placeholder.com/200x200" alt="Фильм 2" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">Название фильма 2</h5>
-                    <p class="card-text">Краткое описание фильма.</p>
-                    <a href="#" class="btn btn-primary">Подробнее</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-sm-4 col-6">
-            <div class="card movie-card">
-                <img src="https://via.placeholder.com/200x200" alt="Фильм 2" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">Название фильма 2</h5>
-                    <p class="card-text">Краткое описание фильма.</p>
-                    <a href="#" class="btn btn-primary">Подробнее</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2 col-sm-4 col-6">
-            <div class="card movie-card">
-                <img src="https://via.placeholder.com/200x200" alt="Фильм 2" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">Название фильма 2</h5>
-                    <p class="card-text">Краткое описание фильма.</p>
-                    <a href="#" class="btn btn-primary">Подробнее</a>
-                </div>
-            </div>
-        </div>
-        <!-- Добавьте больше карточек здесь -->
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

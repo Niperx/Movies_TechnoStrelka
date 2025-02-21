@@ -7,7 +7,7 @@ from app.models import Film # Импортируем модель и Base из m
 from app import db, app
 
 # Замените 'YOUR_API_KEY' на ваш реальный API-ключ
-API_KEY = '862e6c17-39b9-4bba-873a-4ffa03edb9cb'
+API_KEY = '0e8cf7a2-df61-4606-90e3-97f17a90b695'
 BASE_URL = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/top'
 
 
@@ -127,10 +127,10 @@ if __name__ == "__main__":
     # Получаем топ-250 фильмов
     films = get_top_films(top_type='TOP_250_BEST_FILMS', page=1)
     save_films_to_database(films)
-    sleep(1)
+    sleep(2)
     films = get_top_films(top_type='TOP_250_BEST_FILMS', page=2)
     save_films_to_database(films)
-    sleep(1)
+    sleep(2)
     films = get_top_films(top_type='TOP_250_BEST_FILMS', page=3)
     save_films_to_database(films)
 
