@@ -6,7 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import sqlalchemy as sa
 from app import app, db
-from app.models import User, Film
+from app.models import User, Film, Tag
 from app.forms import LoginForm, RegistrationForm, EditProfileForm
 
 
@@ -74,8 +74,8 @@ def user(username):
 
 @app.route('/movie/<film_id>')
 def movie(film_id):
-    film = db.first_or_404(sa.select(Film).where(Film.film_id == film_id))
-    return render_template('movie.html', film=film)
+    movie = db.first_or_404(sa.select(Film).where(Film.film_id == film_id))
+    return render_template('movie.html', movie=movie)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -93,3 +93,32 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Редактирование профиля',
                            form=form)
+
+
+from sqlalchemy import func
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '').strip().lower()
+    if not query:
+        return render_template('search_results.html', films=[], query=query)
+
+    # Разделяем запрос на отдельные теги
+    search_tags = [tag.strip() for tag in query.split()]
+
+    # Подсчет количества совпадений для каждого фильма
+    films = (
+        Film.query
+        .join(Film.tags)
+        .filter(Tag.name.in_(search_tags))
+        .all()
+    )
+
+    # Добавляем количество совпадений для каждого фильма
+    for film in films:
+        film.match_count = sum(1 for tag in film.tags if tag.name.lower() in search_tags)
+
+    # Сортируем фильмы по количеству совпадений
+    films.sort(key=lambda f: f.match_count, reverse=True)
+
+    return render_template('search_results.html', films=films, query=query)

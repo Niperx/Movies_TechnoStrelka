@@ -6,16 +6,26 @@
 <div class="container">
     <div class="row">
         <!-- Пример карточки фильма -->
-        {% for film in films %}
+        {% for film in films %} <!-- Предполагается, что films — это список фильмов -->
         <div class="col-md-2 col-sm-4 col-6">
-            <div class="card movie-card">
-                <img src="{{ film.poster_Url }}" alt="{{ film.title }}" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">{{ film.title }}</h5>
-                    <p class="card-text">{{ film.shortDescription }}</p>
-                    <a href="{{ url_for('movie', film_id=film.film_id) }}" class="btn btn-primary">Подробнее</a>
+            <!-- Ссылка на страницу фильма -->
+            <a href="{{ url_for('movie', film_id=film.film_id) }}" class="text-decoration-none">
+                <div class="card movie-card">
+                    <!-- Контейнер для постера -->
+                    <div class="poster-container">
+                        <!-- Постер фильма -->
+                        <img src="{{ film.poster_Url }}" alt="{{ film.title }} poster" class="card-img-top">
+                        <!-- Надпись "Подробнее" поверх постера -->
+                        <div class="overlay">
+                            <span class="btn-more">Подробнее</span>
+                        </div>
+                    </div>
+                    <!-- Описание фильма -->
+                    <div class="card-body">
+                        <p class="card-text">{{ film.description[:150] }}...</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         {% endfor %}
     </div>

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from hashlib import md5
-from typing import Optional
+from typing import Optional, List
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app import db
@@ -11,6 +11,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 @login.user_loader
 def load_user(id):
   return db.session.get(User, int(id))
+
+film_tag = sa.Table(
+    "film_tag",
+    db.metadata,
+    sa.Column("film_id", sa.Integer, sa.ForeignKey("film.id"), primary_key=True),
+    sa.Column("tag_id", sa.Integer, sa.ForeignKey("tag.id"), primary_key=True)
+)
 
 
 class User(UserMixin, db.Model):
@@ -49,12 +56,33 @@ class Film(db.Model):
     wed_Url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300))
     genres: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300))
     countries: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300))
-    tags: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300))
     ai_plot: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
     ai_characters: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
     ai_moment: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
     ai_idea: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
     ai_impress: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
 
+    tags: so.Mapped[List["Tag"]] = so.relationship(
+        "Tag",
+        secondary=film_tag,
+        back_populates="films"
+    )
+
+
     def __repr__(self):
         return f"<Film(film_id={self.film_id}, name_ru={self.title}, year={self.year}, rating={self.rating})>"
+
+
+class Tag(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True, nullable=False, index=True)
+
+    # Связь с фильмами через промежуточную таблицу
+    films: so.Mapped[List["Film"]] = so.relationship(
+        "Film",
+        secondary=film_tag,
+        back_populates="tags"
+    )
+
+    def __repr__(self):
+        return f"<Tag(id={self.id}, name={self.name})>"

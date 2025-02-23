@@ -9,6 +9,8 @@ body {
     font-weight: bold;
 }
 
+
+/* AUTH */
 /* Стили для формы авторизации */
 .auth-container {
     width: 100%; /* Ширина контейнера */
@@ -103,35 +105,101 @@ body {
     margin-right: 10px; /* Отступ между чекбоксом и текстом */
 }
 
-/* Стили для карточек фильмов */
+
+
+/* INDEX */
+/* Стили для карточки фильма */
 .movie-card {
-    margin-bottom: 15px; /* Отступ между карточками */
+    margin-bottom: 15px;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень */
-    height: 350px; /* Фиксированная высота карточки */
-    display: flex; /* Используем flexbox для вертикального выравнивания */
-    flex-direction: column; /* Размещаем элементы вертикально */
+    position: relative; /* Для абсолютного позиционирования элементов внутри */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Добавляем плавную анимацию */
 }
 
-.movie-card img {
+.movie-card:hover {
+    transform: scale(1.05); /* Приближаем карточку при наведении */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Добавляем более заметную тень */
+}
+
+/* Стили для изображения постера */
+.movie-card .poster-container {
+    position: relative; /* Для размещения оверлея поверх постера */
+    overflow: hidden;
+    border-radius: 10px 10px 0 0; /* Сохраняем закругление углов */
+}
+
+.movie-card .poster-container img {
     width: 100%;
-    height: 250px; /* Увеличиваем высоту изображения */
+    height: 250px;
     object-fit: cover;
+    transition: opacity 0.3s ease; /* Добавляем плавное затемнение */
 }
 
+/* Эффект виньеты только для постера */
+.movie-card .poster-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)); /* Виньетка */
+    opacity: 0; /* Скрываем оверлей по умолчанию */
+    transition: opacity 0.3s ease; /* Плавное появление */
+}
+
+.movie-card:hover .poster-container::after {
+    opacity: 1; /* Показываем оверлей при наведении */
+}
+
+/* Кнопка "Подробнее" поверх постера */
+.movie-card .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* Скрываем кнопку по умолчанию */
+    transition: opacity 0.3s ease; /* Плавное появление */
+}
+
+.movie-card:hover .overlay {
+    opacity: 1; /* Показываем кнопку при наведении */
+}
+
+.movie-card .overlay .btn-more {
+    color: white; /* Белый текст */
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none; /* Убираем подчеркивание */
+    padding: 10px 20px;
+    border: 2px solid white; /* Белая граница */
+    background-color: transparent; /* Прозрачный фон */
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Плавная смена цвета */
+}
+
+.movie-card .overlay .btn-more:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Легкий белый фон при наведении */
+    color: white; /* Текст остаётся белым */
+}
+
+/* Описание фильма */
 .movie-card .card-body {
-    padding: 10px; /* Уменьшаем внутренние отступы */
+    background: rgba(255, 255, 255, 0.9); /* Легкий белый фон для описания */
+    padding: 10px;
     text-align: center;
-    flex-grow: 1; /* Заполняем оставшееся пространство текстом */
-    display: flex; /* Для центрирования содержимого */
-    flex-direction: column; /* Вертикальное размещение элементов */
-    justify-content: space-between; /* Распределяем элементы равномерно */
+    border-radius: 0 0 10px 10px; /* Закругляем нижние углы */
 }
 
-.movie-card h5.card-title {
-    font-size: 1rem; /* Размер заголовка */
-    margin-bottom: 5px;
+.movie-card .card-body p {
+    color: black; /* Чёрный текст описания */
+    font-size: 0.9rem;
+    margin: 0; /* Убираем отступы */
 }
 
 /* Ограничение высоты описания */
@@ -150,4 +218,289 @@ body {
     padding: 5px 10px; /* Размер кнопки */
     font-size: 0.9rem;
     align-self: center; /* Центрируем кнопку */
+}
+
+
+.container {
+    max-width: 1200px; /* Максимальная ширина контейнера */
+    margin: 0 auto; /* Центрируем контейнер */
+}
+
+/* MOVIE */
+/* Стили для страницы фильма */
+.movie-page {
+    margin-top: 20px;
+}
+
+/* Постер фильма */
+.movie-poster {
+    width: 300px; /* Увеличиваем ширину */
+    height: 450px; /* Увеличиваем высоту */
+    object-fit: cover; /* Сохраняем пропорции изображения */
+    border-radius: 10px; /* Закругленные углы */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+    margin: 0 auto; /* Центрируем постер на маленьких экранах */
+}
+
+/* Ряд с постером и информацией */
+.movie-info-row {
+    display: flex; /* Принудительно применяем Flexbox */
+    align-items: flex-start; /* Выравниваем элементы по верхней границе */
+    gap: 20px; /* Отступ между постером и информацией */
+}
+
+/* Информация о фильме */
+.movie-info {
+    flex: 1; /* Блок занимает оставшееся пространство */
+}
+
+/* Адаптивность для маленьких экранов */
+@media (max-width: 768px) {
+    .movie-info-row {
+        flex-direction: column; /* Переводим элементы в столбец */
+        align-items: center; /* Центрируем элементы */
+    }
+
+    .movie-info {
+        margin-top: 20px; /* Отступ между постером и информацией */
+    }
+}
+
+
+.movie-accordion .accordion-item {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.movie-accordion .accordion-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.movie-accordion .accordion-button {
+    padding: 15px;
+    font-size: 1rem;
+    color: #333;
+    background-color: transparent;
+    border: none;
+}
+
+.movie-accordion .accordion-button::after {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23333'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
+}
+
+.movie-accordion .accordion-body {
+    padding: 15px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+
+
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.search-container input[type="text"] {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+
+/* Стили для страницы результатов поиска */
+.search-results {
+    margin-top: 20px;
+}
+
+/* Заголовок страницы */
+.search-results h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Кнопка "Назад к каталогу" */
+.search-results .back-to-catalog {
+    display: block;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.search-results .back-to-catalog a {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.search-results .back-to-catalog a:hover {
+    background-color: #5a6268;
+}
+
+/* Сообщение о пустых результатах */
+.search-results .no-results {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.search-results .no-results a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.search-results .no-results a:hover {
+    text-decoration: underline;
+}
+
+/* Карточки фильмов */
+.search-results .movie-card {
+    margin-bottom: 15px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-results .movie-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Постер фильма */
+.search-results .poster-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px 10px 0 0;
+}
+
+.search-results .poster-container img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+}
+
+.search-results .poster-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.search-results .movie-card:hover .poster-container::after {
+    opacity: 1;
+}
+
+/* Кнопка "Подробнее" поверх постера */
+.search-results .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.search-results .movie-card:hover .overlay {
+    opacity: 1;
+}
+
+.search-results .overlay .btn-more {
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid white;
+    background-color: transparent;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.search-results .overlay .btn-more:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Описание фильма */
+.search-results .card-body {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    text-align: center;
+    border-radius: 0 0 10px 10px;
+}
+
+.search-results .card-body p {
+    color: black;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.search-results .card-body p.card-text {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    max-height: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Теги */
+.search-results .tags {
+    margin-top: 10px;
+}
+
+.search-results .badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.search-results .badge-primary {
+    background-color: #007bff;
+}
+
+.search-results .badge-secondary {
+    background-color: #6c757d;
 }
