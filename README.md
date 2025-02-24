@@ -28,4 +28,5 @@ flask run
 
 1. Скачать ElasticSearch
 2. Запустить сервис через Bash ```./bin/elasticsearch```
+> [!TIP]
 > Сервис будет доступен по адресу: http://localhost:9200
