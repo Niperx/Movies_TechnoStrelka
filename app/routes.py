@@ -150,6 +150,7 @@ def search():
                     "query": query,
                     "fields": [
                         "title^3",  # Заголовок имеет больший вес
+                        "ai_moments^2",
                         "description",
                         "tags"
                     ],

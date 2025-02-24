@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 
 from elasticsearch import Elasticsearch
-es = Elasticsearch("http://localhost:9200")
+es = Elasticsearch("http://192.168.31.201:9200")
 
 app = Flask(__name__)
 login = LoginManager(app)
