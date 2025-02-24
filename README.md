@@ -1,27 +1,23 @@
 ## [*Terminal*]
 ### Запуск проекта
 
-*Создаём окружение*
+Создаём окружение
 ```
 python -m venv venv
 ```
-*Активируем окружение*
+Активируем окружение
 ```
 venv\Scripts\Activate.ps1
 ```
-*Устанавливаем нужные библиотеки*
+Устанавливаем нужные библиотеки
 ```
 pip install -r requirements.txt
 ```
-*Доп. пакет для spacy*
-```
-python -m spacy download ru_core_news_sm
-```
-*Настройка проекта*
+Настройка проекта
 ```
 set FLASK_APP=main.py
 ```
-*Запуск*
+Запуск
 ```
 flask run
 ```
