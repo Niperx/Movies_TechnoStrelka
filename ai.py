@@ -79,6 +79,15 @@ def ai_to_tags(title):
 
     return good_tags
 
+def ai_moment(title):
+    ai_answer = get_custom_response(
+        f'{title}',
+        'Ты эксперт по фильмам, который пересказывает самые основные, яркие и запоминающиеся моменты из фильма, название которого напишет пользователь. Отвечай текстом не более 1000 символов считая знаки препинания'
+    )
+    return ai_answer
+# print(ai_moment('1+1'))
+
+
 def save_tags(num, text):
     info = db.session.scalar(
         sa.select(Film).where(Film.id == num)
@@ -87,17 +96,25 @@ def save_tags(num, text):
     info.tags = text
     db.session.commit()
 
+def save_moment(num, text):
+    info = db.session.scalar(
+        sa.select(Film).where(Film.id == num)
+    )
 
-# for i in range(233, 234):
+    info.ai_moment = text
+    db.session.commit()
+
+
+# for i in range(1, 10):
 #     mv = db.session.scalar(
 #         sa.select(Film).where(Film.id == i)
 #     )
-#     tags = ai_to_tags(mv.title)
-#     save_tags(i, tags)
-#     print(tags)
-#     print(f'{mv.title} - теги добавлены')
+#     moment = ai_moment(mv.title)
+#     save_moment(i, moment)
+#     print(moment)
+#     print(f'{mv.title} - моменты добавлены')
 #     sleep(1)
-#
+
 
 
 

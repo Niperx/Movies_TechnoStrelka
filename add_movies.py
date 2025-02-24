@@ -5,7 +5,7 @@ import requests
 import sqlalchemy as sa
 from app.models import Film, Tag
 from app import db, app
-from ai import ai_to_tags
+from ai import ai_to_tags, ai_moment
 
 # Замените 'YOUR_API_KEY' на ваш реальный API-ключ
 API_KEY = '182f0379-d2e4-4674-a955-fc69e26f4ded'
@@ -88,6 +88,7 @@ def save_films_to_database(films):
         # Проверяем, существует ли фильм с таким film_id в базе данных
         existing_film = db.session.scalar(sa.select(Film).where(Film.film_id == film['kinopoiskId']))
         if not existing_film:
+            ai_moments = ai_moment(f"{film['nameRu']} ({film['year']})")
             tags = ai_to_tags(film['nameRu'])
             film_tags = []
             for t in tags:
@@ -116,7 +117,8 @@ def save_films_to_database(films):
                 wed_Url=film.get('webUrl'),
                 genres=gens,
                 countries=cont,
-                tags=film_tags
+                tags=film_tags,
+                ai_moments = ai_moments
             )
 
             db.session.add(new_film)
