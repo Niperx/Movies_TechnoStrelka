@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% block title %}{{ movie.title }} | КиноКаталог{% endblock %}
 {% block content %}
-
 <div class="container my-5 movie-page">
-    <div class="movie-info-row"> <!-- Важно: добавляем align-items-center для вертикального выравнивания -->
+    <div class="movie-info-row">
         <!-- Блок с постером и краткой информацией -->
         <div class="text-center">
-            <!-- Постер фильма -->
             <img src="{{ movie.poster_Url }}" alt="{{ movie.title }} poster" class="img-fluid movie-poster">
         </div>
         <!-- Блок с краткой информацией -->
@@ -28,43 +26,48 @@
 
             <!-- Форма оценки -->
             {% if current_user.is_authenticated %}
-            <form method="POST" action="{{ url_for('movie', film_id=movie.id) }}" id="rating-form">
-                {{ rating_form.hidden_tag() }}
-                <div class="mb-3">
-                    <label class="form-label">Оцените фильм:</label>
-                    <input id="rating-input" type="number" name="score" class="rating" data-size="sm" step="1" min="1" max="5" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Оценить</button>
-            </form>
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="me-2" style="font-size: 0.9rem;">Оценка (от 1 до 5):</span>
+                <form method="POST" action="{{ url_for('movie', film_id=movie.id) }}" id="rating-form" class="d-flex align-items-center gap-2">
+                    {{ rating_form.hidden_tag() }}
+                    {{ rating_form.score(class="form-control form-control-sm", min=1, max=5, style="width: 60px;") }}
+                    {{ rating_form.submit(class="btn btn-primary btn-sm") }}
+                </form>
+            </div>
             <script>
-                jQuery(document).ready(function ($) {
-                    console.log('Инициализация рейтинга...');
-                    if ($('#rating-input').length) {
-                        console.log('Элемент #rating-input найден!');
+                document.getElementById('rating-form').addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    const score = document.querySelector('#rating-form input[name="score"]').value;
+                    const csrfToken = document.querySelector('#rating-form input[name="csrf_token"]').value;
+
+                    if (score && score >= 1 && score <= 5) {
+                        fetch("{{ url_for('movie', film_id=movie.id) }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                                "X-Requested-With": "XMLHttpRequest" // Указываем, что это AJAX-запрос
+                            },
+                            body: new URLSearchParams({
+                                "score": score,
+                                "csrf_token": csrfToken
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                toastr.success(data.message); // Показываем уведомление
+                                location.reload(); // Обновляем страницу для отображения новых данных
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            toastr.error("Произошла ошибка. Попробуйте позже.");
+                        });
                     } else {
-                        console.log('Элемент #rating-input НЕ найден!');
+                        toastr.warning("Пожалуйста, введите оценку от 1 до 5.");
                     }
-                    jQuery('#rating-input').rating({
-                        showCaption: true,
-                        showClear: false,
-                        size: 'sm',
-                        starCaptions: {
-                            1: 'Очень плохо',
-                            2: 'Плохо',
-                            3: 'Средне',
-                            4: 'Хорошо',
-                            5: 'Отлично'
-                        },
-                        starCaptionClasses: {
-                            1: 'text-danger',
-                            2: 'text-warning',
-                            3: 'text-info',
-                            4: 'text-primary',
-                            5: 'text-success'
-                        },
-                        starIconEmpty: 'far fa-heart', // Пустое сердечко
-                        starIconFilled: 'fas fa-heart' // Заполненное сердечко
-                    });
                 });
             </script>
             {% endif %}
@@ -119,16 +122,52 @@
     <!-- Комментарии -->
     <div class="mt-5">
         <h3>Комментарии</h3>
-        {% if current_user.is_authenticated %}
         <!-- Форма комментария -->
-        <form method="POST" action="{{ url_for('movie', film_id=movie.id) }}">
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('movie', film_id=movie.id) }}" id="comment-form" class="mt-3">
             {{ comment_form.hidden_tag() }}
             <div class="mb-3">
                 {{ comment_form.text.label(class="form-label") }}
                 {{ comment_form.text(class="form-control", rows="3") }}
             </div>
-            {{ comment_form.submit(class="btn btn-success") }}
+            {{ comment_form.submit(class="btn btn-success btn-sm") }}
         </form>
+        <script>
+            document.getElementById('comment-form').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const text = document.querySelector('#comment-form textarea[name="text"]').value;
+                const csrfToken = document.querySelector('#comment-form input[name="csrf_token"]').value;
+
+                if (text.trim()) {
+                    fetch("{{ url_for('movie', film_id=movie.id) }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: new URLSearchParams({
+                            "text": text,
+                            "csrf_token": csrfToken
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            toastr.success(data.message);
+                            location.reload(); // Обновляем страницу для отображения нового комментария
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        toastr.error("Произошла ошибка. Попробуйте позже.");
+                    });
+                } else {
+                    toastr.warning("Пожалуйста, введите текст комментария.");
+                }
+            });
+        </script>
         {% endif %}
 
         <!-- Список комментариев -->

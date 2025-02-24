@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import sqlalchemy as sa
@@ -76,31 +76,33 @@ def user(username):
 @app.route('/movie/<film_id>', methods=['GET', 'POST'])
 def movie(film_id):
     film = Film.query.get_or_404(film_id)
-
-    # Создаем формы
     rating_form = RatingForm()
     comment_form = CommentForm()
 
-    if current_user.is_authenticated:
+    # Проверяем, является ли запрос AJAX
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Обработка формы оценки
         if rating_form.validate_on_submit():
+            score = rating_form.score.data
             existing_rating = Rating.query.filter_by(user_id=current_user.id, film_id=film.id).first()
             if existing_rating:
-                existing_rating.score = rating_form.score.data
+                existing_rating.score = score
             else:
-                new_rating = Rating(score=rating_form.score.data, user=current_user, film=film)
+                new_rating = Rating(score=score, user=current_user, film=film)
                 db.session.add(new_rating)
             db.session.commit()
-            flash('Ваша оценка сохранена!', 'success')
-            return redirect(url_for('movie', film_id=film.id))
+            return jsonify(success=True, message="Ваша оценка сохранена!")
 
         # Обработка формы комментария
-        if comment_form.validate_on_submit():
-            new_comment = Comment(text=comment_form.text.data, user=current_user, film=film)
+        elif comment_form.validate_on_submit():
+            text = comment_form.text.data
+            new_comment = Comment(text=text, user=current_user, film=film)
             db.session.add(new_comment)
             db.session.commit()
-            flash('Ваш комментарий добавлен!', 'success')
-            return redirect(url_for('movie', film_id=film.id))
+            return jsonify(success=True, message="Ваш комментарий добавлен!")
+
+        # Если форма не прошла валидацию
+        return jsonify(success=False, message="Ошибка при сохранении данных.")
 
     # Загрузка оценок и комментариев
     ratings = film.ratings.all()
