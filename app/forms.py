@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
 from wtforms.fields.simple import TextAreaField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, NumberRange
 import sqlalchemy as sa
 from app import db
 from app.models import User
@@ -38,3 +38,13 @@ class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     about_me = TextAreaField('Обо мне', validators=[Length(min=0, max=140)])
     submit = SubmitField('Submit')
+
+
+class RatingForm(FlaskForm):
+    score = IntegerField('Оценка (от 1 до 5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
+    submit = SubmitField('Оценить')
+
+
+class CommentForm(FlaskForm):
+    text = TextAreaField('Комментарий', validators=[DataRequired()])
+    submit = SubmitField('Отправить')

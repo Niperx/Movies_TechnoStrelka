@@ -13,7 +13,7 @@
     <div class="row">
         {% for film in films %}
         <div class="col-md-2 col-sm-4 col-6">
-            <a href="{{ url_for('movie', film_id=film.film_id) }}" class="text-decoration-none">
+            <a href="{{ url_for('movie', film_id=film.id) }}" class="text-decoration-none">
                 <div class="card movie-card">
                     <!-- Контейнер для постера -->
                     <div class="poster-container">
@@ -31,13 +31,9 @@
                         <!-- Вывод тегов -->
                         <div class="tags">
                             {% for tag in film.tags %}
-                                <span class="badge {% if tag.name.lower() in query.lower().split() %}badge-primary{% else %}badge-secondary{% endif %}">
-                                    {{ tag.name }}
-                                </span>
+                                <span class="badge">{{ tag }}</span>
                             {% endfor %}
                         </div>
-                        <!-- Количество совпадений -->
-                        <small class="text-muted">Совпадений: {{ film.match_count }}</small>
                     </div>
                 </div>
             </a>

@@ -1,14 +1,12 @@
 from datetime import datetime, timezone
 
-from dns.e164 import query
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import sqlalchemy as sa
-from app import app, db
-from app.models import User, Film, Tag
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
-
+from app import app, db, es
+from app.models import User, Film, Tag, Rating, Comment
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, RatingForm, CommentForm
 
 @app.before_request
 def before_request():
@@ -18,13 +16,16 @@ def before_request():
 
 
 @app.route('/')
-@app.route('/index')
-# @login_required
 def index():
-    films = db.session.scalars(
-        sa.select(Film)
-    ).all()
-    return render_template('index.html', films=films)
+    # Получаем номер страницы из параметров запроса (по умолчанию 1)
+    page = request.args.get('page', 1, type=int)
+    per_page = 24  # Количество фильмов на странице
+
+    # Пагинация фильмов
+    pagination = Film.query.paginate(page=page, per_page=per_page, error_out=False)
+    films = pagination.items  # Фильмы текущей страницы
+
+    return render_template('index.html', films=films, pagination=pagination)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,10 +73,48 @@ def user(username):
     return render_template('user.html', user=user)
 
 
-@app.route('/movie/<film_id>')
+@app.route('/movie/<film_id>', methods=['GET', 'POST'])
 def movie(film_id):
-    movie = db.first_or_404(sa.select(Film).where(Film.film_id == film_id))
-    return render_template('movie.html', movie=movie)
+    film = Film.query.get_or_404(film_id)
+
+    # Создаем формы
+    rating_form = RatingForm()
+    comment_form = CommentForm()
+
+    if current_user.is_authenticated:
+        # Обработка формы оценки
+        if rating_form.validate_on_submit():
+            existing_rating = Rating.query.filter_by(user_id=current_user.id, film_id=film.id).first()
+            if existing_rating:
+                existing_rating.score = rating_form.score.data
+            else:
+                new_rating = Rating(score=rating_form.score.data, user=current_user, film=film)
+                db.session.add(new_rating)
+            db.session.commit()
+            flash('Ваша оценка сохранена!', 'success')
+            return redirect(url_for('movie', film_id=film.id))
+
+        # Обработка формы комментария
+        if comment_form.validate_on_submit():
+            new_comment = Comment(text=comment_form.text.data, user=current_user, film=film)
+            db.session.add(new_comment)
+            db.session.commit()
+            flash('Ваш комментарий добавлен!', 'success')
+            return redirect(url_for('movie', film_id=film.id))
+
+    # Загрузка оценок и комментариев
+    ratings = film.ratings.all()
+    average_rating = round(sum(r.score for r in ratings) / len(ratings), 1) if ratings else None
+    comments = film.comments.order_by(Comment.timestamp.desc()).all()
+
+    return render_template(
+        'movie.html',
+        movie=film,
+        rating_form=rating_form,
+        comment_form=comment_form,
+        average_rating=average_rating,
+        comments=comments
+    )
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -95,7 +134,6 @@ def edit_profile():
                            form=form)
 
 
-from sqlalchemy import func
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -103,22 +141,31 @@ def search():
     if not query:
         return render_template('search_results.html', films=[], query=query)
 
-    # Разделяем запрос на отдельные теги
-    search_tags = [tag.strip() for tag in query.split()]
-
-    # Подсчет количества совпадений для каждого фильма
-    films = (
-        Film.query
-        .join(Film.tags)
-        .filter(Tag.name.in_(search_tags))
-        .all()
+    # Поиск в Elasticsearch
+    response = es.search(
+        index="films",
+        body={
+            "query": {
+                "multi_match": {
+                    "query": query,
+                    "fields": [
+                        "title^3",  # Заголовок имеет больший вес
+                        "description",
+                        "tags"
+                    ],
+                    "operator": "and"  # Все слова из запроса должны совпасть
+                    # "fuzziness": "AUTO"  # Допускает опечатки
+                }
+            },
+            "size": 50  # Лимит результатов
+        }
     )
 
-    # Добавляем количество совпадений для каждого фильма
-    for film in films:
-        film.match_count = sum(1 for tag in film.tags if tag.name.lower() in search_tags)
-
-    # Сортируем фильмы по количеству совпадений
-    films.sort(key=lambda f: f.match_count, reverse=True)
+    # Извлекаем найденные фильмы
+    films = []
+    for hit in response["hits"]["hits"]:
+        film_data = hit["_source"]
+        film_data["id"] = hit["_id"]
+        films.append(film_data)
 
     return render_template('search_results.html', films=films, query=query)

@@ -84,9 +84,8 @@ def save_films_to_database(films):
     app.app_context().push()
     for film in films:
         print(film)
-        # Проверяем, существует ли фильм с таким film_id в базе данных
-        # existing_film = session.query(Film).filter_by(film_id=film['filmId']).first()
 
+        # Проверяем, существует ли фильм с таким film_id в базе данных
         existing_film = db.session.scalar(sa.select(Film).where(Film.film_id == film['kinopoiskId']))
         if not existing_film:
             tags = ai_to_tags(film['nameRu'])
@@ -127,11 +126,8 @@ def save_films_to_database(films):
             print(f"Фильм с ID {film['kinopoiskId']} уже существует в базе данных.")
 
 
-
-
-# Пример использования функций
 if __name__ == "__main__":
-    for i in range(1, 2):
+    for i in range(2, 4):
         films = get_top_films(top_type='TOP_250_BEST_FILMS', page=i)
         save_films_to_database(films)
         print(f"Страница {i} готова!")
