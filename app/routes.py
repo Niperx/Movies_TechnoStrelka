@@ -1,12 +1,13 @@
 from datetime import datetime, timezone
-
+# from sentence_transformers import SentenceTransformer
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import sqlalchemy as sa
-from app import app, db, es
+from app import app, db, model
 from app.models import User, Film, Tag, Rating, Comment
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, RatingForm, CommentForm
+from search import es
 
 @app.before_request
 def before_request():
@@ -139,36 +140,82 @@ def edit_profile():
 
 @app.route('/search', methods=['GET'])
 def search():
+    # Получаем запрос от пользователя
     query = request.args.get('query', '').strip().lower()
     if not query:
         return render_template('search_results.html', films=[], query=query)
 
-    # Поиск в Elasticsearch
-    response = es.search(
-        index="films",
-        body={
-            "query": {
-                "multi_match": {
-                    "query": query,
-                    "fields": [
-                        "title^3",  # Заголовок имеет больший вес
-                        "ai_moments^2",
-                        "description",
-                        "tags"
-                    ],
-                    "operator": "and"  # Все слова из запроса должны совпасть
-                    # "fuzziness": "AUTO"  # Допускает опечатки
-                }
-            },
-            "size": 50  # Лимит результатов
-        }
-    )
+    try:
+        # Преобразуем запрос в вектор
+        # model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+        query_vector = model.encode(query).tolist()
 
-    # Извлекаем найденные фильмы
-    films = []
-    for hit in response["hits"]["hits"]:
-        film_data = hit["_source"]
-        film_data["id"] = hit["_id"]
-        films.append(film_data)
+        # Проверяем, существует ли индекс
+        if not es.indices.exists(index="films"):
+            return render_template('search_results.html', films=[], query=query, error="Индекс 'films' не существует.")
 
-    return render_template('search_results.html', films=films, query=query)
+        # Поиск в Elasticsearch
+        response = es.search(
+            index="films",
+            body={
+                "query": {
+                    "bool": {
+                        "should": [
+                            {
+                                "multi_match": {
+                                    "query": query,
+                                    "fields": ["title^3", "description^2", "ai_moment", "genres"],
+                                    "type": "best_fields",
+                                    "minimum_should_match": "75%",
+                                    "fuzziness": "AUTO"
+                                }
+                            },
+                            {
+                                "script_score": {
+                                    "query": {"match_all": {}},
+                                    "script": {
+                                        "source": "cosineSimilarity(params.query_vector, 'description_vector') + 1.0",
+                                        "params": {"query_vector": query_vector}
+                                    }
+                                }
+                            },
+                            {
+                                "script_score": {
+                                    "query": {"match_all": {}},
+                                    "script": {
+                                        "source": "cosineSimilarity(params.query_vector, 'ai_moment_vector') + 1.0",
+                                        "params": {"query_vector": query_vector}
+                                    }
+                                }
+                            }
+                            # {
+                            #     "script_score": {
+                            #         "query": {"match_all": {}},
+                            #         "script": {
+                            #             "source": "cosineSimilarity(params.query_vector, 'review_vector') + 0.8",
+                            #             "params": {"query_vector": query_vector}
+                            #         }
+                            #     }
+                            # }
+                        ]
+                    }
+                },
+                "min_score": 10,
+                "size": 20
+            }
+        )
+
+        # Извлекаем найденные фильмы
+        films = []
+        for hit in response["hits"]["hits"]:
+            film_data = hit["_source"]
+            film_data["id"] = hit["_id"]  # Извлекаем ID фильма
+            film_data["score"] = hit["_score"]  # Добавляем релевантность
+            films.append(film_data)
+
+        return render_template('search_results.html', films=films, query=query)
+
+    except Exception as e:
+        # Обработка ошибок
+        print(f"Ошибка при выполнении запроса: {e}")
+        return render_template('search_results.html', films=[], query=query, error=str(e))

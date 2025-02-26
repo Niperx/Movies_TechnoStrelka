@@ -19,6 +19,13 @@ film_tag = sa.Table(
     sa.Column("tag_id", sa.Integer, sa.ForeignKey("tag.id"), primary_key=True)
 )
 
+film_review = sa.Table(
+    "film_review",
+    db.metadata,
+    sa.Column("film_id", sa.Integer, sa.ForeignKey("film.id"), primary_key=True),
+    sa.Column("review_id", sa.Integer, sa.ForeignKey("review.id"), primary_key=True)
+)
+
 
 class User(UserMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -59,11 +66,17 @@ class Film(db.Model):
     wed_Url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300))
     genres: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300))
     countries: so.Mapped[Optional[str]] = so.mapped_column(sa.String(300))
-    ai_plot: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
-    ai_characters: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
-    ai_moment: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
-    ai_idea: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
-    ai_impress: so.Mapped[Optional[str]] = so.mapped_column(sa.String(1000))
+    ai_plot: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    ai_characters: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    ai_moment: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    ai_idea: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    ai_impress: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+
+    review: so.Mapped[List["Review"]] = so.relationship(
+        "Review",
+        secondary=film_review,
+        back_populates="films"
+    )
 
     tags: so.Mapped[List["Tag"]] = so.relationship(
         "Tag",
@@ -87,6 +100,21 @@ class Tag(db.Model):
         "Film",
         secondary=film_tag,
         back_populates="tags"
+    )
+
+    def __repr__(self):
+        return f"<Tag(id={self.id}, name={self.name})>"
+
+
+class Review(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    text: so.Mapped[str] = so.mapped_column(sa.Text, unique=True, nullable=False, index=True)
+
+    # Связь с фильмами через промежуточную таблицу
+    films: so.Mapped[List["Film"]] = so.relationship(
+        "Film",
+        secondary=film_review,
+        back_populates="review"
     )
 
     def __repr__(self):
