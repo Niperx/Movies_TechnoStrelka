@@ -2,7 +2,7 @@
   <img src="https://i.ibb.co/MkHwcFYS/cute-black-cat-in-glasses-black-wallpaper.jpg" alt="CatiWeb Team"/>
 </p>
 
-## Дополнительные файлы
+## Дополнительные файлы перед запуском проекта
 1. База с фильмами main.db - [Yandex Disk](https://disk.yandex.ru/d/8iWYkXAFsiRfJA) (поместить в папку db в проекте)
 2. ElasticSearch - [Yandex Disk](https://disk.yandex.ru/d/NnZI88rn5qWgbw) (разместить в любом удобном месте)
 
@@ -41,9 +41,9 @@ python setup.py
 ```
 set FLASK_APP=main.py
 ```
-Запуск
+## Запуск
 ```
 flask run
 ```
 > [!NOTE]
-> Убедитесь что сервер для обработки поиска запущен
+> Убедитесь что сервер для обработки поиска запущен и база фильмов проиндексирована
