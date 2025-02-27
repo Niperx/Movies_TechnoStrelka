@@ -17,8 +17,11 @@
 > На время проверки проекта, можно отключить https протокол в файле по пути```/config/elasticsearch.yml```
 
 ## Настройка проекта
-
-Создаём окружение
+Устанавливаем проект в ручную или через git
+```
+git clone https://github.com/Niperx/Movies_TechnoStrelka.git
+```
+Создаём окружение в папке с проектом
 ```
 python -m venv venv
 ```
