@@ -1,6 +1,5 @@
-![CatiWeb Team](https://ibb.co/N2qD9c8C)
+![CatiWeb Team](https://i.ibb.co/MkHwcFYS/cute-black-cat-in-glasses-black-wallpaper.jpg)
 ## Дополнительные файлы
-
 1. База с фильмами main.db - [Yandex Disk](https://disk.yandex.ru/d/8iWYkXAFsiRfJA) (поместить в папку db в проекте)
 2. ElasticSearch - [Yandex Disk](https://disk.yandex.ru/d/NnZI88rn5qWgbw) (разместить в любом удобном месте)
 
