@@ -1,23 +1,45 @@
 {% extends "base.html" %}
-
+{% block title %}Редактировать профиль{% endblock %}
 {% block content %}
-    <h1>Edit Profile</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
-            {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.about_me.label }}<br>
-            {{ form.about_me(cols=50, rows=4) }}<br>
-            {% for error in form.about_me.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+<div class="container my-5 profile-edit-page">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card profile-card">
+                <!-- Заголовок -->
+                <div class="profile-header text-center">
+                    <img src="{{ current_user.avatar(128) }}" alt="Avatar" class="rounded-circle avatar-lg mb-3">
+                    <h2 class="mb-3">Редактировать профиль</h2>
+                </div>
+
+                <!-- Форма редактирования -->
+                <form action="" method="post" class="p-4">
+                    {{ form.hidden_tag() }}
+
+                    <!-- Поле имени пользователя -->
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control", placeholder="Введите имя пользователя") }}
+                        {% for error in form.username.errors %}
+                            <small class="text-danger">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Поле "О себе" -->
+                    <div class="mb-3">
+                        {{ form.about_me.label(class="form-label") }}
+                        {{ form.about_me(class="form-control", rows="4", placeholder="Расскажите о себе") }}
+                        {% for error in form.about_me.errors %}
+                            <small class="text-danger">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

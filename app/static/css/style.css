@@ -571,3 +571,91 @@ body {
     background-color: #e9ecef; /* Темнее серый фон при наведении */
     color: black; /* Текст остаётся чёрным */
 }
+
+
+
+/* Профиль */
+.profile-header {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.avatar-lg {
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+}
+
+.profile-card {
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Комментарии */
+.comment-block {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.comment-poster {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.comment-list .card-body {
+    padding: 15px;
+}
+
+.no-comments {
+    color: #6c757d;
+    font-size: 1.2rem;
+}
+
+
+/* Панель фильтрации */
+#sort_by {
+    width: auto;
+    max-width: 200px;
+}
+
+.movie-card {
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.poster-container {
+    position: relative;
+}
+
+.poster-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.poster-container:hover .overlay {
+    opacity: 1;
+}
+
+.btn-more {
+    font-size: 0.9rem;
+    font-weight: bold;
+}

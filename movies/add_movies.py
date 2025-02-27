@@ -29,6 +29,88 @@ def get_film(id):
         return []
 
 
+def get_films_by_page(page=1):
+    headers = {
+        'Content-Type': 'application/json',
+        'X-API-KEY': Config.kp_API_KEY,
+    }
+    url = "https://kinopoiskapiunofficial.tech/api/v2.2/films"
+    params = {
+        "genres": 7,
+        "order": "RATING",
+        "type": "FILM",
+        "ratingFrom": 0,
+        "ratingTo": 10,
+        "yearFrom": 2000,
+        "yearTo": 2024,
+        "page": page
+    }
+
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        data = response.json()
+        sleep(2)
+        print(data)
+        mvs = data.get('items', [])
+
+        if not mvs:
+            print("Фильмы не найдены.")
+            return []
+
+        movies = []
+        for film in mvs:
+            id = film['kinopoiskId']
+            if film['nameRu']:
+                mv = get_film(id)
+                movies.append(mv)
+
+        return movies
+
+    except requests.exceptions.RequestException as e:
+        print(f"Ошибка при выполнении запроса: {e}")
+        return []
+
+
+def get_top_films(top_type, page):
+    headers = {
+        'Content-Type': 'application/json',
+        'X-API-KEY': Config.kp_API_KEY,
+    }
+
+    params = {
+        'type': top_type,
+        'page': page
+    }
+
+    url = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/top'
+
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+
+        data = response.json()
+        sleep(2)
+        print(data)
+        mvs = data.get('films', [])
+
+        if not mvs:
+            print("Фильмы не найдены.")
+            return []
+
+        movies = []
+        for film in mvs:
+            id = film['filmId']
+            mv = get_film(id)
+            movies.append(mv)
+
+        return movies
+
+    except requests.exceptions.RequestException as e:
+        print(f"Ошибка при выполнении запроса: {e}")
+        return []
+
+
 def get_review(id):
     headers = {
         'Content-Type': 'application/json',
@@ -54,50 +136,6 @@ def get_review(id):
         return []
 
 
-def get_top_films(top_type, page):
-    """
-    Функция для получения топ-250 фильмов.
-    :param top_type: Тип топа ('TOP_250_BEST_FILMS' или 'TOP_100_POPULAR_FILMS').
-    :param page: Номер страницы (по умолчанию 1).
-    :return: Список фильмов из топа.
-    """
-    headers = {
-        'Content-Type': 'application/json',
-        'X-API-KEY': Config.kp_API_KEY,
-    }
-
-    params = {
-        'type': top_type,
-        'page': page
-    }
-
-    url = 'https://kinopoiskapiunofficial.tech/api/v2.2/films/top'
-
-    try:
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()  # Проверяем статус ответа
-
-        data = response.json()
-        sleep(2)
-        print(data)
-        mvs = data.get('films', [])
-        movies = []
-        for film in mvs:
-            id = film['filmId']
-            mv = get_film(id)
-            movies.append(mv)
-
-        if not mvs:
-            print("Фильмы не найдены.")
-            return []
-
-        return movies
-
-    except requests.exceptions.RequestException as e:
-        print(f"Ошибка при выполнении запроса: {e}")
-        return []
-
-
 def save_films_to_database(films):
     """
     Сохраняет фильмы в базу данных через SQLAlchemy.
@@ -111,7 +149,7 @@ def save_films_to_database(films):
         existing_film = db.session.scalar(sa.select(Film).where(Film.film_id == film['kinopoiskId']))
         if not existing_film:
             ai_moments = ai_moment(f"{film['nameRu']} ({film['year']})")
-            tags = ai_to_tags(film['nameRu'])
+            tags = ai_to_tags(f"{film['nameRu']} ({film['year']})")
             reviews = get_review(film['kinopoiskId'])
 
             film_tags = []
@@ -173,11 +211,19 @@ def save_films_to_database(films):
 
 
 if __name__ == "__main__":
-    for i in range(2, 4):
-        films = get_top_films(top_type='TOP_250_BEST_FILMS', page=i)
+    # for i in range(13, 14):
+    #     films = get_top_films(top_type='TOP_250_BEST_FILMS', page=i)
+    #     save_films_to_database(films)
+    #     print(f"Страница {i} готова!")
+    #     sleep(1)
+    for i in range(4, 6):
+        films = get_films_by_page(page=i)
         save_films_to_database(films)
         print(f"Страница {i} готова!")
         sleep(1)
+    # # Пример использования
+    # all_films = get_films_by_page(1)
+    # print(all_films)
     # print(get_review(535341).get('items')[2])
     # for rew in get_review(535341).get('items'):
     #     if rew['type'] == 'POSITIVE':

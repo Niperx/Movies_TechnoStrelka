@@ -3,12 +3,12 @@ from time import sleep
 import sqlalchemy as sa
 from app.models import Film # Импортируем модель и Base из models.py
 from app import db, app
-
+from movies import Config
 from openai import OpenAI
 
 # Proxy
 client = OpenAI(
-    api_key="sk-MsYz8DlX7XHgtxT4fifxj3RVfvUWOb1D",
+    api_key=Config.openAI_API_KEY,
     base_url="https://api.proxyapi.ru/openai/v1",
 )
 

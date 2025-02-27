@@ -38,6 +38,11 @@ class User(UserMixin, db.Model):
     ratings: so.Mapped[List["Rating"]] = so.relationship(back_populates="user", lazy="dynamic")
     comments: so.Mapped[List["Comment"]] = so.relationship(back_populates="user", lazy="dynamic")
 
+    search_history: so.Mapped[List["SearchHistory"]] = so.relationship(
+        back_populates="user",
+        lazy="dynamic"
+    )
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -86,6 +91,7 @@ class Film(db.Model):
 
     ratings: so.Mapped[List["Rating"]] = so.relationship(back_populates="film", lazy="dynamic")
     comments: so.Mapped[List["Comment"]] = so.relationship(back_populates="film", lazy="dynamic")
+    search_history: so.Mapped[List["SearchHistory"]] = so.relationship(back_populates="film", lazy="dynamic")
 
     def __repr__(self):
         return f"<Film(film_id={self.film_id}, name_ru={self.title}, year={self.year}, rating={self.rating})>"
@@ -151,3 +157,23 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"<Comment(user_id={self.user_id}, film_id={self.film_id}, text={self.text[:20]})>"
+
+
+class SearchHistory(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("user.id"), nullable=False)
+    query: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=False)  # Запрос пользователя
+    timestamp: so.Mapped[datetime] = so.mapped_column(
+        sa.DateTime, default=lambda: datetime.now(timezone.utc)
+    )  # Время поиска
+
+    film_id: so.Mapped[Optional[int]] = so.mapped_column(
+        sa.ForeignKey("film.id"), nullable=True, default=None
+    )  # ID найденного фильма (опционально)
+
+    # Связи
+    user: so.Mapped["User"] = so.relationship(back_populates="search_history")
+    film: so.Mapped["Film"] = so.relationship(back_populates="search_history")
+
+    def __repr__(self):
+        return f"<SearchHistory {self.query} by User {self.user_id}>"

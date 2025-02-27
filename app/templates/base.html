@@ -42,7 +42,10 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('user', username=current_user.username) }}">{{ current_user.username }}, </a>
+                        <a class="nav-link" href="{{ url_for('user', username=current_user.username) }}">{{ current_user.username }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('for_you') }}">Для вас</a> <!-- Новая ссылка -->
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
@@ -54,7 +57,7 @@
     </nav>
 
     <!-- Основной контент -->
-    <div class="container mt-5 pt-5">
+    <div class="container">
         {% block content %}
         <!-- Содержимое страницы будет здесь -->
         {% endblock %}

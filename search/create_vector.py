@@ -5,12 +5,7 @@ import sqlalchemy.orm as so
 
 from search import es
 
-# from sentence_transformers import SentenceTransformer
-
-# Загрузка модели
-# model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
-
-def get_films_with_reviews():
+def get_films():
     # Получаем все фильмы
     films = db.session.scalars(
         sa.select(Film).options(so.subqueryload(Film.review))
@@ -19,10 +14,7 @@ def get_films_with_reviews():
     # Формируем данные для индексации
     films_data = []
     for film in films:
-        # Извлекаем тексты обзоров
         reviews = [review.text for review in film.review]
-
-        # Объединяем обзоры в одну строку
         reviews_text = " ".join(reviews)
 
         # Формируем словарь с данными фильма
@@ -32,8 +24,9 @@ def get_films_with_reviews():
             "genres": film.genres,
             "description": film.description,
             "ai_moment": film.ai_moment,
-            # "reviews": reviews_text,  # Объединённые обзоры
-            "poster_Url": film.poster_Url
+            "poster_Url": film.poster_Url,
+            "shortDescription": film.shortDescription,
+            "reviews": reviews_text,  # Объединённые обзоры
         }
         films_data.append(film_data)
 
@@ -43,38 +36,32 @@ def get_films_with_reviews():
 # Функция для индексации фильмов
 def index_films(films):
     for film in films:
-        # Генерация векторов для каждого текстового поля
+        # Генерация векторов для текстовых полей
         description_vector = model.encode(film["description"] or "").tolist()
-        # review_vector = model.encode(" ".join(film["reviews"]) if film["reviews"] else "").tolist()  # Объединяем рецензии
-        ai_moment_vector = model.encode(film["ai_moment"] or "").tolist()  # Используем ai_moment
+        ai_moment_vector = model.encode(film["ai_moment"] or "").tolist()
+        review_vector = model.encode(film["reviews"]).tolist()
 
         # Индексация фильма в Elasticsearch
         es.index(
             index="films",
-            id=film["id"],  # Используем ID фильма
+            id=film["id"],
             document={
                 "title": film["title"],
-                "genres": film["genres"],
                 "description": film["description"] or "",
                 "description_vector": description_vector,
-                # "reviews": film["reviews"] or [],
-                # "review_vector": review_vector,
+                "genres": film["genres"].split(", "),  # Разделяем жанры по запятой
                 "ai_moment": film["ai_moment"] or "",
                 "ai_moment_vector": ai_moment_vector,
-                "poster_Url": film["poster_Url"] or ""  # Добавляем URL постера
+                "poster_Url": film["poster_Url"] or "",  # URL постера
+                "shortDescription": film["shortDescription"] or "",  # Краткое описание
+                "reviews": film["reviews"],  # Обзоры (текст)
+                "review_vector": review_vector  # Векторное представление обзоров
             }
         )
 
 
 if __name__ == "__main__":
     app.app_context().push()
-    data = get_films_with_reviews()
-    index_films(data)
+    films_data = get_films()
 
-
-
-    # Преобразование текста в вектор
-    # text = "Это тестовый текст."
-    # vector = model.encode(text)
-    #
-    # print(vector)  # Выведет числовой вектор
+    index_films(films_data)

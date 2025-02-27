@@ -2,25 +2,40 @@
 {% block title %}Каталог фильмов{% endblock %}
 {% block content %}
 <div class="container">
+    <!-- Панель фильтрации -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form method="get" class="d-flex align-items-center gap-2">
+                <label for="sort_by" class="mb-0">Сортировать по:</label>
+                <select name="sort_by" id="sort_by" class="form-select" onchange="this.form.submit()">
+                    <option value="id" {% if sort_by == 'id' %}selected{% endif %}>ID</option>
+                    <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Рейтингу</option>
+                    <option value="year" {% if sort_by == 'year' %}selected{% endif %}>Году</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Список фильмов -->
     <div class="row">
-        <!-- Пример карточки фильма -->
-        {% for film in films %} <!-- Предполагается, что films — это список фильмов -->
+        {% for film in films %}
         <div class="col-md-2 col-sm-4 col-6">
-            <!-- Ссылка на страницу фильма -->
             <a href="{{ url_for('movie', film_id=film.id) }}" class="text-decoration-none">
                 <div class="card movie-card">
-                    <!-- Контейнер для постера -->
                     <div class="poster-container">
-                        <!-- Постер фильма -->
                         <img src="{{ film.poster_Url }}" alt="{{ film.title }} poster" class="card-img-top">
-                        <!-- Надпись "Подробнее" поверх постера -->
                         <div class="overlay">
                             <span class="btn-more">Подробнее</span>
                         </div>
                     </div>
-                    <!-- Описание фильма -->
                     <div class="card-body">
-                        <p class="card-text">{{ film.description[:150] }}...</p>
+                        <p class="card-text">
+                            {% if film.description %}
+                                {{ film.description[:150] }}...
+                            {% else %}
+                                Описание недоступно.
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </a>
@@ -32,27 +47,22 @@
     {% if pagination %}
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
-            <!-- Кнопка "Предыдущая" -->
             <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
-                <a class="page-link" href="{{ url_for('index', page=pagination.prev_num) if pagination.has_prev else '#' }}">
+                <a class="page-link" href="{{ url_for('index', page=pagination.prev_num, sort_by=sort_by) if pagination.has_prev else '#' }}">
                     Предыдущая
                 </a>
             </li>
-
-            <!-- Номера страниц -->
             {% for page_num in pagination.iter_pages() %}
             {% if page_num %}
             <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
-                <a class="page-link" href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a>
+                <a class="page-link" href="{{ url_for('index', page=page_num, sort_by=sort_by) }}">{{ page_num }}</a>
             </li>
             {% else %}
             <li class="page-item disabled"><span class="page-link">...</span></li>
             {% endif %}
             {% endfor %}
-
-            <!-- Кнопка "Следующая" -->
             <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                <a class="page-link" href="{{ url_for('index', page=pagination.next_num) if pagination.has_next else '#' }}">
+                <a class="page-link" href="{{ url_for('index', page=pagination.next_num, sort_by=sort_by) if pagination.has_next else '#' }}">
                     Следующая
                 </a>
             </li>
