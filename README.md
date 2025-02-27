@@ -3,7 +3,8 @@
 </p>
 
 ## Дополнительные файлы перед запуском проекта
-1. ~~База с фильмами main.db - [Yandex Disk](https://disk.yandex.ru/d/8iWYkXAFsiRfJA) (поместить в папку db в проекте)~~ Уже присутствует в репозитории (76mb)
+1. ~~База с фильмами main.db - [Yandex Disk](https://disk.yandex.ru/d/8iWYkXAFsiRfJA) (поместить в папку db в проекте)~~
+>Уже присутствует в репозитории (76mb)
 2. ElasticSearch - [Yandex Disk](https://disk.yandex.ru/d/NnZI88rn5qWgbw) (разместить в любом удобном месте)
 
 ## Запуск поиск-сервиса
