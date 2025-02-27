@@ -1,3 +1,9 @@
+![CatiWeb Team](https://ibb.co/N2qD9c8C)
+## Дополнительные файлы
+
+1. База с фильмами main.db - [Yandex Disk](https://disk.yandex.ru/d/8iWYkXAFsiRfJA) (поместить в папку db в проекте)
+2. ElasticSearch - [Yandex Disk](https://disk.yandex.ru/d/NnZI88rn5qWgbw) (разместить в любом удобном месте)
+
 ## Запуск поиск-сервиса
 
 1. Скачать ElasticSearch
