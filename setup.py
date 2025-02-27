@@ -6,5 +6,4 @@ if __name__ == "__main__":
 
     app.app_context().push()
     films_data = create_vector.get_films()
-
     create_vector.index_films(films_data)

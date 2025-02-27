@@ -58,6 +58,7 @@ def index_films(films):
                 "review_vector": review_vector  # Векторное представление обзоров
             }
         )
+    print('Индексация прошла успешно!')
 
 
 if __name__ == "__main__":

@@ -8,3 +8,4 @@ email-validator
 requests
 elasticsearch
 openai
+sentence_transformers
