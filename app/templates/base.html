@@ -2,32 +2,25 @@
 <html>
 <head>
     <title>{% block title %}КиноКаталог{% endblock %}</title>
-    <!-- Основные стили -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
-    <!-- Дополнительные стили для конкретных страниц -->
     {% block head %}{% endblock %}
 </head>
 <body {% block body_class %}{% endblock %}>
-    <!-- Навигационная панель -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <!-- Логотип или название сайта -->
             <a class="navbar-brand site-title" href="{{ url_for('index') }}">КиноКаталог</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <!-- Форма поиска (центрирована) -->
             <form class="d-flex mx-auto w-50" action="{{ url_for('search') }}" method="GET">
                 <input class="form-control me-2" type="text" name="query" placeholder="Поиск..." required>
                 <button class="btn btn-outline-light" type="submit">Найти</button>
             </form>
-            <!-- Кнопка для мобильного меню -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -56,19 +49,15 @@
         </div>
     </nav>
 
-    <!-- Основной контент -->
     <div class="container">
         {% block content %}
-        <!-- Содержимое страницы будет здесь -->
         {% endblock %}
     </div>
 
-    <!-- Подключение JavaScript -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <!-- Дополнительные скрипты для конкретных страниц -->
     {% block scripts %}{% endblock %}
 </body>
 </html>

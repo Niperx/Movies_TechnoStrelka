@@ -101,7 +101,6 @@ class Tag(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True, nullable=False, index=True)
 
-    # Связь с фильмами через промежуточную таблицу
     films: so.Mapped[List["Film"]] = so.relationship(
         "Film",
         secondary=film_tag,
@@ -116,7 +115,6 @@ class Review(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     text: so.Mapped[str] = so.mapped_column(sa.Text, unique=True, nullable=False, index=True)
 
-    # Связь с фильмами через промежуточную таблицу
     films: so.Mapped[List["Film"]] = so.relationship(
         "Film",
         secondary=film_review,
@@ -127,21 +125,19 @@ class Review(db.Model):
         return f"<Tag(id={self.id}, name={self.name})>"
 
 
-# Модель оценки
 class Rating(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("user.id"), nullable=False)
     film_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("film.id"), nullable=False)
     score: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=False)  # Оценка (например, от 1 до 5)
 
-    # Связи
     user: so.Mapped["User"] = so.relationship(back_populates="ratings")
     film: so.Mapped["Film"] = so.relationship(back_populates="ratings")
 
     def __repr__(self):
         return f"<Rating(user_id={self.user_id}, film_id={self.film_id}, score={self.score})>"
 
-# Модель комментария
+
 class Comment(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("user.id"), nullable=False)
@@ -151,7 +147,6 @@ class Comment(db.Model):
         sa.DateTime, index=True, default=lambda: datetime.now(timezone.utc)
     )
 
-    # Связи
     user: so.Mapped["User"] = so.relationship(back_populates="comments")
     film: so.Mapped["Film"] = so.relationship(back_populates="comments")
 
@@ -165,13 +160,12 @@ class SearchHistory(db.Model):
     query: so.Mapped[str] = so.mapped_column(sa.String(256), nullable=False)  # Запрос пользователя
     timestamp: so.Mapped[datetime] = so.mapped_column(
         sa.DateTime, default=lambda: datetime.now(timezone.utc)
-    )  # Время поиска
+    )
 
     film_id: so.Mapped[Optional[int]] = so.mapped_column(
         sa.ForeignKey("film.id"), nullable=True, default=None
-    )  # ID найденного фильма (опционально)
+    )
 
-    # Связи
     user: so.Mapped["User"] = so.relationship(back_populates="search_history")
     film: so.Mapped["Film"] = so.relationship(back_populates="search_history")
 

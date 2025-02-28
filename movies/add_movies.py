@@ -18,7 +18,7 @@ def get_film(id):
 
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Проверяем статус ответа
+        response.raise_for_status()
 
         data = response.json()
         return data
@@ -125,7 +125,7 @@ def get_review(id):
 
     try:
         response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()  # Проверяем статус ответа
+        response.raise_for_status()
 
         data = response.json()
         return data.get('items')
@@ -137,15 +137,10 @@ def get_review(id):
 
 
 def save_films_to_database(films):
-    """
-    Сохраняет фильмы в базу данных через SQLAlchemy.
-    :param films: Список фильмов для сохранения.
-    """
     app.app_context().push()
     for film in films:
         print(film)
 
-        # Проверяем, существует ли фильм с таким film_id в базе данных
         existing_film = db.session.scalar(sa.select(Film).where(Film.film_id == film['kinopoiskId']))
         if not existing_film:
             ai_moments = ai_moment(f"{film['nameRu']} ({film['year']})")
@@ -153,7 +148,6 @@ def save_films_to_database(films):
             reviews = get_review(film['kinopoiskId'])
 
             film_tags = []
-            # Добавляем теги
             for t in tags:
                 existing_tag = db.session.scalar(sa.select(Tag).where(Tag.name == t))
                 if not existing_tag:
@@ -161,7 +155,6 @@ def save_films_to_database(films):
                     db.session.add(existing_tag)
                 film_tags.append(existing_tag)
 
-            # Добавляем отзывы
             film_reviews = []
             for rew in reviews:
                 if rew['type'] == 'POSITIVE':
@@ -194,12 +187,10 @@ def save_films_to_database(films):
             db.session.add(new_film)
             db.session.commit()
 
-            # Добавляем связи между фильмом и тегами через ORM
             for tag in film_tags:
                 if tag not in new_film.tags:
                     new_film.tags.append(tag)
 
-            # Добавляем связи между фильмом и отзывами через ORM
             for review in film_reviews:
                 if review not in new_film.review:
                     new_film.review.append(review)
@@ -221,12 +212,4 @@ if __name__ == "__main__":
         save_films_to_database(films)
         print(f"Страница {i} готова!")
         sleep(1)
-    # # Пример использования
-    # all_films = get_films_by_page(1)
-    # print(all_films)
-    # print(get_review(535341).get('items')[2])
-    # for rew in get_review(535341).get('items'):
-    #     if rew['type'] == 'POSITIVE':
-    #         print(rew['description'])
-    # Получаем топ-250 фильмов
     print("Готово!")

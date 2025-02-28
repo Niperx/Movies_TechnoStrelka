@@ -5,10 +5,9 @@ from search import es
 from elasticsearch.helpers import bulk
 
 def index_films():
-    films = Film.query.all()  # Получаем все фильмы из базы данных
+    films = Film.query.all()
     actions = []
     for film in films:
-        # Формируем документ для Elasticsearch
         doc = {
             "_index": "films",  # Название индекса
             "_id": film.id,     # ID фильма
@@ -22,8 +21,6 @@ def index_films():
         }
         print(doc)
         actions.append(doc)
-
-    # Массовая загрузка данных в Elasticsearch
 
     bulk(es, actions)
     print(f"Indexed {len(actions)} films.")

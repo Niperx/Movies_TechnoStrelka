@@ -6,6 +6,7 @@
 1. ~~База с фильмами main.db - [Yandex Disk](https://disk.yandex.ru/d/8iWYkXAFsiRfJA) (поместить в папку db в проекте)~~
 >Уже присутствует в репозитории (76mb)
 2. ElasticSearch - [Yandex Disk](https://disk.yandex.ru/d/NnZI88rn5qWgbw) (разместить в любом удобном месте)
+>Заменить файл по пути "ElasticSearch/config/elasticsearch.yml" - [Yandex Disk](https://disk.yandex.ru/d/UQCRDshumdIVaA)
 
 ## Запуск поиск-сервиса
 
@@ -15,7 +16,7 @@
 > Сервис будет доступен по адресу: http://localhost:9200
 
 > [!NOTE]
-> На время проверки проекта, можно отключить https протокол в файле по пути```/config/elasticsearch.yml```
+> На время проверки проекта, можно отключить https протокол в файле по пути```/config/elasticsearch.yml```, либо заменить файл на тот, что можно скачать выше
 
 ## Настройка проекта
 Устанавливаем проект в ручную или через git

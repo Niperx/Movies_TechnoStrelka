@@ -2,33 +2,26 @@
 {% block title %}Рекомендации для вас{% endblock %}
 {% block content %}
 <div class="container search-results">
-    <!-- Заголовок -->
     <h1 class="text-center">Рекомендации для вас</h1>
     <div class="back-to-catalog text-center">
         <a href="{{ url_for('index') }}" class="btn btn-secondary">Назад к каталогу</a>
     </div>
 
-    <!-- Если рекомендации найдены -->
     {% if recommendations %}
     <div class="row">
         {% for film in recommendations %}
         <div class="col-md-2 col-sm-4 col-6">
             <a href="{{ url_for('movie', film_id=film.id) }}" class="text-decoration-none">
                 <div class="card movie-card">
-                    <!-- Контейнер для постера -->
                     <div class="poster-container">
-                        <!-- Постер фильма -->
                         <img src="{{ film.poster_Url }}" alt="{{ film.title }} poster" class="card-img-top">
-                        <!-- Надпись "Подробнее" поверх постера -->
                         <div class="overlay">
                             <span class="btn-more">Подробнее</span>
                         </div>
                     </div>
-                    <!-- Описание фильма -->
                     <div class="card-body">
                         <h5 class="card-title">{{ film.title }}</h5>
                         <p class="card-text">{{ film.shortDescription[:100] }}...</p>
-                        <!-- Вывод жанров -->
                         <div class="tags">
                             {% for genre in film.genres %}
                                 <span class="badge">{{ genre }}</span>
@@ -41,7 +34,6 @@
         {% endfor %}
     </div>
     {% else %}
-    <!-- Если рекомендаций нет -->
     <div class="no-results text-center">
         <h3>Рекомендации отсутствуют</h3>
         <p>Попробуйте выполнить поиск фильмов или оценить больше фильмов, чтобы получить персонализированные рекомендации.</p>

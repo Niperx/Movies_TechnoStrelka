@@ -1,6 +1,6 @@
 from search import es
 
-# Удаление индекса "films"
+
 def delete_index(index_name):
     if es.indices.exists(index=index_name):
         es.indices.delete(index=index_name)

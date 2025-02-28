@@ -18,24 +18,20 @@ def before_request():
 
 @app.route('/')
 def index():
-    # Получаем номер страницы из параметров запроса (по умолчанию 1)
     page = request.args.get('page', 1, type=int)
-    per_page = 24  # Количество фильмов на странице
+    per_page = 24
 
-    # Параметр сортировки (по умолчанию 'id')
-    sort_by = request.args.get('sort_by', 'id')  # Может быть 'id', 'rating', или 'year'
+    sort_by = request.args.get('sort_by', 'id')
 
-    # Определяем поле для сортировки
     if sort_by == 'rating':
-        order_by = Film.rating.desc()  # Сортировка по рейтингу (по убыванию)
+        order_by = Film.rating.desc()
     elif sort_by == 'year':
-        order_by = Film.year.desc()  # Сортировка по году (по убыванию)
+        order_by = Film.year.desc()
     else:
-        order_by = Film.id.asc()  # Сортировка по ID (по возрастанию)
+        order_by = Film.id.asc()
 
-    # Пагинация фильмов с учетом сортировки
     pagination = Film.query.order_by(order_by).paginate(page=page, per_page=per_page, error_out=False)
-    films = pagination.items  # Фильмы текущей страницы
+    films = pagination.items
 
     return render_template('index.html', films=films, pagination=pagination, sort_by=sort_by)
 
@@ -92,9 +88,7 @@ def movie(film_id):
     rating_form = RatingForm()
     comment_form = CommentForm()
 
-    # Проверяем, является ли запрос AJAX
     if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Обработка формы оценки
         if rating_form.validate_on_submit():
             score = rating_form.score.data
             existing_rating = Rating.query.filter_by(user_id=current_user.id, film_id=film.id).first()
@@ -106,7 +100,7 @@ def movie(film_id):
             db.session.commit()
             return jsonify(success=True, message="Ваша оценка сохранена!")
 
-        # Обработка формы комментария
+
         elif comment_form.validate_on_submit():
             text = comment_form.text.data
             new_comment = Comment(text=text, user=current_user, film=film)
@@ -114,10 +108,9 @@ def movie(film_id):
             db.session.commit()
             return jsonify(success=True, message="Ваш комментарий добавлен!")
 
-        # Если форма не прошла валидацию
         return jsonify(success=False, message="Ошибка при сохранении данных.")
 
-    # Загрузка оценок и комментариев
+
     ratings = film.ratings.all()
     average_rating = round(sum(r.score for r in ratings) / len(ratings), 1) if ratings else None
     comments = film.comments.order_by(Comment.timestamp.desc()).all()
@@ -157,14 +150,12 @@ def search():
         return render_template('search_results.html', films=[], query=query)
 
     try:
-        # Проверяем, является ли запрос жанром
         genres = ['драма', 'комедия', 'фантастика', 'приключения', 'триллер', 'детектив', 'криминал', 'фэнтези', 'боевик',
              'мелодрама', 'военный', 'история', 'мультфильм', 'семейный', 'аниме', 'биография', 'музыка', 'спорт', 'мюзикл',
              'вестерн', 'ужасы', 'детский', 'документальный', 'короткометражка']
         is_genre_query = any(genre in query for genre in genres)
 
         if is_genre_query:
-            # Фильтрация по жанру
             response = es.search(
                 index="films",
                 body={
@@ -175,14 +166,12 @@ def search():
                             ]
                         }
                     },
-                    "size": 6  # Ограничение количества результатов
+                    "size": 6
                 }
             )
         else:
-            # Преобразуем запрос в вектор
             query_vector = model.encode(query).tolist()
 
-            # Комбинированный поиск: по названию, смыслу и обзорам
             response = es.search(
                 index="films",
                 body={
@@ -193,7 +182,7 @@ def search():
                                     "match_phrase": {
                                         "title": {
                                             "query": query,
-                                            "boost": 3.0  # Увеличиваем приоритет фразового поиска
+                                            "boost": 3.0
                                         }
                                     }
                                 },
@@ -201,7 +190,7 @@ def search():
                                     "multi_match": {
                                         "query": query,
                                         "fields": ["title^4", "description", "ai_moment"],
-                                        "operator": "and",  # Требуем совпадение всех слов
+                                        "operator": "and",
                                         "fuzziness": "AUTO"
                                     }
                                 },
@@ -235,17 +224,16 @@ def search():
                             ]
                         }
                     },
-                    "min_score": 3.5,  # Минимальная оценка релевантности
-                    "size": 6          # Ограничение количества результатов
+                    "min_score": 3.5,
+                    "size": 6
                 }
             )
 
-        # Извлекаем найденные фильмы
         films = []
         for hit in response["hits"]["hits"]:
             film_data = hit["_source"]
             film_data["id"] = hit["_id"]
-            film_data["score"] = hit["_score"]  # Добавляем релевантность
+            film_data["score"] = hit["_score"]
             films.append(film_data)
 
         if current_user.is_authenticated:
@@ -261,26 +249,17 @@ def search():
 
 
 def get_recommendations(top_n=6):
-    # Получаем историю поиска пользователя
     history = db.session.query(SearchHistory).filter_by(user_id=current_user.id).order_by(
         SearchHistory.timestamp.desc()).limit(3).all()
 
     if not history:
         return []
 
-    # Собираем уникальные запросы пользователя
     queries = list(set(entry.query for entry in history))
-
-
-    # Преобразуем запросы в векторы
     query_vectors = [model.encode(query).tolist() for query in queries]
 
-
-    # Находим средний вектор для всех запросов
     avg_vector = np.mean(query_vectors, axis=0).tolist()
 
-
-    # Ищем фильмы, схожие со средним вектором
     response = es.search(
         index="films",
         body={
@@ -295,16 +274,15 @@ def get_recommendations(top_n=6):
                             }
                         }
                     },
-                    # "random_score": {},  # Добавляем случайность
+                    # "random_score": {},
                     # "boost_mode": "sum"
                 }
             },
-            "min_score": 1,  # Уменьшаем порог
-            "size": top_n  # Количество рекомендаций
+            "min_score": 1,
+            "size": top_n
         }
     )
 
-    # Извлекаем рекомендованные фильмы
     recommendations = []
     for hit in response["hits"]["hits"]:
         film_data = hit["_source"]
@@ -312,14 +290,12 @@ def get_recommendations(top_n=6):
         film_data["score"] = hit["_score"]
         recommendations.append(film_data)
 
-    # print("Рекомендации:", recommendations)
     return recommendations
 
 
 @app.route('/for_you')
-@login_required  # Только для авторизованных пользователей
+@login_required
 def for_you():
-    # Получаем рекомендации для текущего пользователя
     recommendations = get_recommendations()
 
     return render_template('for_you.html', recommendations=recommendations)

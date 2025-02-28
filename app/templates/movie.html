@@ -3,11 +3,9 @@
 {% block content %}
 <div class="container my-5 movie-page">
     <div class="movie-info-row">
-        <!-- Блок с постером и краткой информацией -->
         <div class="text-center">
             <img src="{{ movie.poster_Url }}" alt="{{ movie.title }} poster" class="img-fluid movie-poster">
         </div>
-        <!-- Блок с краткой информацией -->
         <div class="movie-info">
             <h1 class="mb-3">{{ movie.title }}</h1>
             <p class="lead"><strong>Год:</strong> {{ movie.year }}</p>
@@ -24,7 +22,6 @@
             <hr>
             <p class="card-text">{{ movie.description or "Описание отсутствует." }}</p>
 
-            <!-- Форма оценки -->
             {% if current_user.is_authenticated %}
             <div class="d-flex align-items-center gap-2 mb-3">
                 <span class="me-2" style="font-size: 0.9rem;">Оценка (от 1 до 5):</span>
@@ -74,10 +71,8 @@
         </div>
     </div>
 
-    <!-- Вкладки с подробной информацией -->
     <div class="mt-4">
         <div class="accordion movie-accordion" id="movieAccordion">
-            <!-- Вкладка "Сюжет" -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingPlot">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePlot" aria-expanded="false" aria-controls="collapsePlot">
@@ -93,10 +88,8 @@
         </div>
     </div>
 
-    <!-- Комментарии -->
     <div class="mt-5">
         <h3>Комментарии</h3>
-        <!-- Форма комментария -->
         {% if current_user.is_authenticated %}
         <form method="POST" action="{{ url_for('movie', film_id=movie.id) }}" id="comment-form" class="mt-3">
             {{ comment_form.hidden_tag() }}
@@ -144,17 +137,14 @@
         </script>
         {% endif %}
 
-        <!-- Список комментариев -->
         {% if comments %}
         <div class="comment-list mt-3">
             {% for comment in comments %}
             <div class="comment-block card mb-3">
                 <div class="row g-0">
-                    <!-- Аватар пользователя -->
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
                         <img src="{{ comment.user.avatar(64) }}" alt="{{ comment.user.username }}" class="rounded-circle comment-avatar">
                     </div>
-                    <!-- Текст комментария -->
                     <div class="col-md-10">
                         <div class="card-body">
                             <h5 class="card-title">{{ comment.user.username }}</h5>
